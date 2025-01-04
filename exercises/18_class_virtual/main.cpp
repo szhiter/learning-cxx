@@ -21,6 +21,7 @@ struct B : public A {
 };
 struct C : public B {
     // READ: final <https://zh.cppreference.com/w/cpp/language/final>
+    // 当一个成员函数被声明为final时，这意味着这个函数在派生类中不能被重写
     char virtual_name() const final {
         return 'C';
     }

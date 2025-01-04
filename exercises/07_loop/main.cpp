@@ -4,19 +4,13 @@
 // THINk: 这个函数是一个纯函数（pure function）吗？
 // READ: 纯函数 <https://zh.wikipedia.org/wiki/%E7%BA%AF%E5%87%BD%E6%95%B0>
 static unsigned long long fibonacci(int i) {
-    // 初始化缓存数组（缓存大小为96，因为要支持至少fib(90)）
-    static unsigned long long cache[96] = {0, 1}; // 初始值：cache[0] = 0, cache[1] = 1
-    static bool initialized = false;
-
-    // 如果缓存没有完全计算过（即缓存尚未初始化），进行计算
-    if (!initialized) {
-        for (int j = 2; j <= 90; ++j) {  // 计算并填充缓存
-            cache[j] = cache[j - 1] + cache[j - 2];
-        }
-        initialized = true; // 标记缓存已初始化
+    // TODO: 为缓存设置正确的初始值
+    static unsigned long long cache[96] = {0, 1}, cached;
+    // TODO: 设置正确的循环条件
+    for (cached = 2; cached < 96; ++cached) {
+        cache[cached] = cache[cached - 1] + cache[cached - 2];
     }
-
-    return cache[i]; // 返回缓存中的结果
+    return cache[i];
 }
 
 // ---- 不要修改以下代码 ----

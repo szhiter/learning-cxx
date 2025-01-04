@@ -1,5 +1,8 @@
 ﻿#include "../exercise.h"
 #include <cstring>
+#include <cmath>
+#include <algorithm>
+
 // READ: 类模板 <https://zh.cppreference.com/w/cpp/language/class_template>
 
 template<class T>
@@ -9,8 +12,9 @@ struct Tensor4D {
 
     Tensor4D(unsigned int const shape_[4], T const *data_) {
         unsigned int size = 1;
-        std::memcpy(shape, shape_, 4 * sizeof(unsigned int));         // 保存形状
-        size = shape[0] * shape[1] * shape[2] * shape[3];// 计算大小
+        // TODO: 填入正确的 shape 并计算 size
+        std::copy(shape_, shape_ + 4, shape);
+        size = shape_[0]*shape_[1]*shape_[2]*shape_[3];
         data = new T[size];
         std::memcpy(data, data_, size * sizeof(T));
     }
@@ -28,30 +32,20 @@ struct Tensor4D {
     // 例如，`this` 形状为 `[1, 2, 3, 4]`，`others` 形状为 `[1, 2, 1, 4]`，
     // 则 `this` 与 `others` 相加时，3 个形状为 `[1, 2, 1, 4]` 的子张量各自与 `others` 对应项相加。
     Tensor4D &operator+=(Tensor4D const &others) {
+        unsigned int stride[4] = {shape[1] * shape[2] * shape[3], shape[2] * shape[3], shape[3], 1};
+        unsigned int others_stride[4] = {others.shape[1] * others.shape[2] * others.shape[3],
+                                         others.shape[2] * others.shape[3], others.shape[3], 1};
         // TODO: 实现单向广播的加法
-        // 进行单向广播
-        for (unsigned int i = 0; i < shape[0]; ++i) {
-            for (unsigned int j = 0; j < shape[1]; ++j) {
-                for (unsigned int k = 0; k < shape[2]; ++k) {
-                    for (unsigned int l = 0; l < shape[3]; ++l) {
-                        // 计算具体的索引
-                        unsigned int idx = ((i * shape[1] + j) * shape[2] + k) * shape[3] + l;
-
-                        // 计算 others 的数据索引
-                        unsigned int other_i = (i < others.shape[0]) ? i : 0;
-                        unsigned int other_j = (j < others.shape[1]) ? j : 0;
-                        unsigned int other_k = (k < others.shape[2]) ? k : 0;
-                        unsigned int other_l = (l < others.shape[3]) ? l : 0;
-
-                        // 处理 broadcast
-                        if (others.shape[0] == 1) { other_i = 0; }
-                        if (others.shape[1] == 1) { other_j = 0; }
-                        if (others.shape[2] == 1) { other_k = 0; }
-                        if (others.shape[3] == 1) { other_l = 0; }
-
-                        unsigned int other_idx = ((other_i * others.shape[1] + other_j) * others.shape[2] + other_k) * others.shape[3] + other_l;
-
-                        data[idx] += others.data[other_idx];
+        for(unsigned int i = 0; i < shape[0]; i++){
+            for(unsigned int j = 0; j < shape[1]; j++){
+                for(unsigned int k = 0; k < shape[2]; k++){
+                    for(unsigned int z = 0; z < shape[3]; z++){
+                        int oi = others.shape[0] == 1 ? 0 : i;
+                        int oj = others.shape[1] == 1 ? 0 : j;
+                        int ok = others.shape[2] == 1 ? 0 : k;
+                        int oz = others.shape[3] == 1 ? 0 : z;
+                        data[i * stride[0] + j * stride[1] + k * stride[2] + z] +=
+                            others.data[oi * others_stride[0] + oj * others_stride[1] + ok * others_stride[2] + oz];
                     }
                 }
             }

@@ -12,12 +12,14 @@ int main(int argc, char **argv) {
     std::weak_ptr<int> observer = shared;
     ASSERT(observer.use_count() == 4, "");
 
+    // reset函数用于释放智能指针所管理的资源
     ptrs[0].reset();
     ASSERT(observer.use_count() == 3, "");
 
     ptrs[1] = nullptr;
     ASSERT(observer.use_count() == 2, "");
 
+    // 这个新创建的 std::shared_ptr<int> 是完全独立的，它不共享 shared 所管理的资源
     ptrs[2] = std::make_shared<int>(*shared);
     ASSERT(observer.use_count() == 1, "");
 

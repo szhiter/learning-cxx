@@ -1,8 +1,8 @@
 ﻿#include "../exercise.h"
-#include <cstring>
 #include <memory>
 #include <string>
 #include <vector>
+#include <cstring>
 
 // READ: `std::unique_ptr` <https://zh.cppreference.com/w/cpp/memory/unique_ptr>
 
@@ -47,25 +47,19 @@ int main(int argc, char **argv) {
     drop(forward(reset(nullptr)));
     problems[0] = std::move(RECORDS);
 
-    forward(drop(reset(forward(forward(reset(nullptr))))));
+    forward(drop(reset(forward(forward(reset(nullptr)))))); 
     problems[1] = std::move(RECORDS);
 
     drop(drop(reset(drop(reset(reset(nullptr))))));
     problems[2] = std::move(RECORDS);
 
-    //// ---- 不要修改以上代码 ----
-    // for(int i = 0 ;  i < 3 ; ++i){
-    //     std::cout << "Problem " << i << ":\n";
-    //     for(auto &record : problems[i]){
-    //         std::cout << record << " ";
-    //     }
-    //     std::cout << "\n";
-    // }
+    // ---- 不要修改以上代码 ----
+
     std::vector<const char *> answers[]{
         {"fd"},
         // TODO: 分析 problems[1] 中资源的生命周期，将记录填入 `std::vector`
-        {"d" , "ffr"},
-        {"d", "d" , "r"}
+        {"d", "ffr"},
+        {"d", "d", "r"},
     };
 
     // ---- 不要修改以下代码 ----

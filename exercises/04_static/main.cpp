@@ -3,6 +3,7 @@
 // READ: `static` 关键字 <https://zh.cppreference.com/w/cpp/language/storage_duration>
 // THINK: 这个函数的两个 `static` 各自的作用是什么？
 static int func(int param) {
+    // static_变量在第一次调用func时被初始化为param的值
     static int static_ = param;
     // std::cout << "static_ = " << static_ << std::endl;
     return static_++;
